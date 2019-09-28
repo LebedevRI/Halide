@@ -1,0 +1,38 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/buildflags.mk
+
+TARGET_BUILD=build
+
+export CC=clang-9
+export CXX=clang++-9
+
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+	CXXFLAGS += -O0
+else
+	CFLAGS += -O2
+	CXXFLAGS += -O2
+	# -flto=thin
+	LDFLAGS += -fuse-ld=lld-9
+endif
+
+CFLAGS += -ffunction-sections -fdata-sections
+CXXFLAGS += -ffunction-sections -fdata-sections
+LDFLAGS += -Wl,--as-needed -Wl,--gc-sections
+
+export CFLAGS CXXFLAGS LDFLAGS
+
+%:
+	dh $@ --buildsystem=cmake+ninja --builddirectory=$(TARGET_BUILD)
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release \
+	-DLLVM_DIR:PATH=/usr/lib/llvm-9/lib/cmake/llvm/ -DCMAKE_PREFIX_PATH:PATH=/usr/lib/llvm-9/ -DHALIDE_REQUIRE_LLVM_VERSION:STRING="90" \
+	-DBUILD_SHARED_LIBS:BOOL=OFF -DHALIDE_SHARED_LIBRARY:BOOL=ON -DHALIDE_SHARED_LLVM_LIBRARY:BOOL=ON
+	# -GNinja -DCMAKE_JOB_POOLS:STRING="link_pool=1" -DCMAKE_JOB_POOL_LINK:STRING="link_pool"
+
+override_dh_auto_test:
+
+override_dh_auto_clean:
+	rm -rf $(TARGET_BUILD)

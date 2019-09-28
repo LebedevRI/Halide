@@ -1,0 +1,71 @@
+Source: halide
+Priority: optional
+Maintainer: Roman Lebedev <lebedev.ri@gmail.com>
+Build-Depends: debhelper-compat (= 12),
+               cmake (>= 3.11),
+               ninja-build,
+               llvm-9-dev,
+               llvm-9,
+               lld-9,
+               clang-9,
+               libomp-9-dev,
+               libclang-common-9-dev,
+               libjpeg62-turbo-dev,
+               libpng-dev,
+               libatlas-base-dev,
+               libblas-dev,
+               libeigen3-dev
+Standards-Version: 4.4.0
+Section: libs
+Homepage: https://halide-lang.org/
+Vcs-Browser: https://salsa.debian.org/LebedevRI-guest/halide
+Vcs-Git: https://salsa.debian.org/LebedevRI-guest/halide.git
+
+Package: halide-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: halide (= ${binary:Version}), ${misc:Depends}
+Description: a language for fast, portable computation - Development files
+ Halide is a programming language designed to make it easier to write
+ high-performance image and array processing code on modern machines.
+ Halide currently targets:
+ * CPU architectures: X86, ARM, MIPS, Hexagon, PowerPC
+ * Operating systems: Linux, Windows, macOS, Android, iOS, Qualcomm QuRT
+ * GPU Compute APIs: CUDA, OpenCL, OpenGL, OpenGL Compute Shaders, Apple Metal,
+   Microsoft Direct X 12
+ .
+ Rather than being a standalone programming language, Halide is embedded in C++.
+ This means you write C++ code that builds an in-memory representation of a
+ Halide pipeline using Halide's C++ API. You can then compile this
+ representation to an object file, or JIT-compile it and run it in the same
+ process.
+ .
+ This package contains the development environment for the Halide library.
+
+Package: halide
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         libc6,
+         libedit2,
+         libffi6,
+         libgcc1,
+         libllvm9,
+         libstdc++6,
+         libtinfo6,
+         zlib1g
+Description: a language for fast, portable computation
+ Halide is a programming language designed to make it easier to write
+ high-performance image and array processing code on modern machines.
+ Halide currently targets:
+ * CPU architectures: X86, ARM, MIPS, Hexagon, PowerPC
+ * Operating systems: Linux, Windows, macOS, Android, iOS, Qualcomm QuRT
+ * GPU Compute APIs: CUDA, OpenCL, OpenGL, OpenGL Compute Shaders, Apple Metal,
+   Microsoft Direct X 12
+ .
+ Rather than being a standalone programming language, Halide is embedded in C++.
+ This means you write C++ code that builds an in-memory representation of a
+ Halide pipeline using Halide's C++ API. You can then compile this
+ representation to an object file, or JIT-compile it and run it in the same
+ process.

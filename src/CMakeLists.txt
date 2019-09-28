@@ -759,25 +759,10 @@ else()
   endif()
 endif()
 
-# Get the LLVM libraries we need
-llvm_map_components_to_libnames(LIBS ${LLVM_COMPONENTS})
-
-# When building a shared library the LLVM libraries will be
-# embedded in the Halide library. When building a static library
-# LLVM is not embedded but CMake knows that when building an executable
-# against the Halide static library that it needs to link LLVM too so
-# PRIVATE scope is the correct choice here.
-target_link_libraries(Halide PRIVATE ${LIBS})
-
-if (NOT MSVC)
-  set(LLVM_CONFIG ${LLVM_TOOLS_BINARY_DIR}/llvm-config)
-  execute_process(COMMAND "${LLVM_CONFIG}" --system-libs ${LLVM_COMPONENTS} OUTPUT_VARIABLE EXTRA_LIBS)
-  string(STRIP EXTRA_LIBS "${EXTRA_LIBS}")
-  string(REPLACE "-l" ";" EXTRA_LIBS "${EXTRA_LIBS}")
-  string(REPLACE "\n" "" EXTRA_LIBS "${EXTRA_LIBS}")
-  string(REPLACE " " "" EXTRA_LIBS "${EXTRA_LIBS}")
-  target_link_libraries(Halide PUBLIC ${EXTRA_LIBS})
+if(HALIDE_SHARED_LLVM_LIBRARY)
+  set(LLVM_USE_SHARED "USE_SHARED")
 endif()
+llvm_config(Halide ${LLVM_USE_SHARED} ${LLVM_COMPONENTS})
 
 install(TARGETS Halide
         RUNTIME DESTINATION bin
