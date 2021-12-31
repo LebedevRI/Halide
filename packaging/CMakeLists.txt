@@ -17,6 +17,9 @@ set(Halide_INSTALL_PLUGINDIR "${CMAKE_INSTALL_LIBDIR}"
 set(Halide_INSTALL_TOOLSDIR "${CMAKE_INSTALL_DATADIR}/tools"
     CACHE STRING "Path to Halide build-time tools and sources")
 
+set(Halide_INSTALL_PYTHONDIR "${Python3_SITEARCH}"
+    CACHE STRING "Path to Halide Python bindings folder")
+
 ##
 # Main library exports
 ##
@@ -44,6 +47,17 @@ foreach (dep IN ITEMS Halide_LLVM Halide_wabt)
         install(TARGETS ${dep} EXPORT Halide_Targets)
     endif ()
 endforeach ()
+
+##
+# Python bindings
+##
+
+if (WITH_PYTHON_BINDINGS)
+    install(TARGETS Halide_Python
+            EXPORT Halide_Python
+            LIBRARY DESTINATION ${Halide_INSTALL_PYTHONDIR} COMPONENT Halide_Python
+            NAMELINK_COMPONENT Halide_Python)
+endif ()
 
 ##
 # Library-type-agnostic interface targets
