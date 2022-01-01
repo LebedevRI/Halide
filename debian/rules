@@ -11,9 +11,9 @@ HALIDE_SOVERSION = 0
 
 LLVM_VERSION = 13
 
-WITH_LTO = ON
-WITH_TESTS = ON
-WITH_PGO = ON
+WITH_LTO = OFF
+WITH_TESTS = OFF
+WITH_PGO = OFF
 WITH_LLD = ON
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -82,7 +82,7 @@ APPS_BUILD_DIR = $(STAGE_BUILD_DIR_PREFIX)/halide-test-apps
 TEST_GROUPS_FLAKY = performance|auto_schedule
 
 %:
-	dh $@ --buildsystem=cmake+ninja
+	dh $@ --with python3 --buildsystem=cmake+ninja
 
 perform_stage_build:
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) dh_auto_configure --sourcedir=$(SOURCE_DIR) --builddir=$(BUILD_DIR) -- \
@@ -95,12 +95,13 @@ perform_stage_build:
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DHalide_ENABLE_RTTI=ON \
 	-DHalide_ENABLE_EXCEPTIONS=ON \
-	-DWITH_PYTHON_BINDINGS=OFF \
+	-DWITH_PYTHON_BINDINGS=ON \
 	-DHalide_REQUIRE_LLVM_VERSION=$(LLVM_VERSION) \
 	-DLLVM_DIR=/usr/lib/llvm-$(LLVM_VERSION)/lib/cmake/llvm \
 	-DHalide_SHARED_LLVM=ON \
 	-DTARGET_WEBASSEMBLY=OFF \
 	-DWITH_TESTS=$(WITH_TESTS) \
+	-DWITH_TEST_PYTHON=$(WITH_TESTS) \
 	-DWITH_DOCS=ON \
 	-DCMAKE_INSTALL_LIBDIR=lib/$(DEB_HOST_MULTIARCH)/ \
 	-DHalide_INSTALL_PLUGINDIR=lib/$(DEB_HOST_MULTIARCH)/halide$(HALIDE_VERSION)/ \
@@ -109,6 +110,7 @@ perform_stage_build:
 	-DHalide_INSTALL_HELPERSDIR=lib/$(DEB_HOST_MULTIARCH)/cmake/HalideHelpers$(HALIDE_VERSION)/ \
 	-DCMAKE_INSTALL_BINDIR=lib/$(DEB_HOST_MULTIARCH)/halide$(HALIDE_VERSION)/ \
 	-DHalide_INSTALL_TOOLSDIR=src/halide$(HALIDE_VERSION)/ \
+	-DHalide_INSTALL_PYTHONDIR=lib/python3/dist-packages/ \
 	-DCMAKE_INSTALL_DOCDIR=share/doc/halide$(HALIDE_VERSION)/
 
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) dh_auto_build --builddir=$(BUILD_DIR)
@@ -119,8 +121,8 @@ perform_stage_build:
 
 ifneq ($(WITH_TESTS),OFF)
 	# WARNING: running multiple halide tests in parallel is unsupported!
-	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --exclude-regex "$(TEST_GROUPS_FLAKY)"                       --test-dir $(BUILD_DIR)
-	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --label-regex   "$(TEST_GROUPS_FLAKY)" --repeat until-pass:5 --test-dir $(BUILD_DIR)
+	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --exclude-regex "$(TEST_GROUPS_FLAKY)"                       --output-on-failure --test-dir $(BUILD_DIR)
+	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --label-regex   "$(TEST_GROUPS_FLAKY)" --repeat until-pass:5 --output-on-failure --test-dir $(BUILD_DIR)
 endif
 
 	dh_auto_install --builddir=$(BUILD_DIR) --destdir=$(INSTALL_DIR)
@@ -144,7 +146,7 @@ ifneq ($(WITH_TESTS),OFF)
 	find $(APPS_BUILD_DIR) \( -name '*.o' -or -name '*.a' \) -delete
 
 	# WARNING: running multiple halide tests in parallel is unsupported!
-	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --test-dir $(APPS_BUILD_DIR)
+	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --output-on-failure --test-dir $(APPS_BUILD_DIR)
 
 	# Remove the whole build directory. We no longer need it.
 	rm -rf $(APPS_BUILD_DIR)

@@ -1,0 +1,21 @@
+From: Roman Lebedev <lebedev.ri@gmail.com>
+Date: Sat, 1 Jan 2022 13:11:42 +0300
+Subject: Actually make Python3_SITEARCH available in packaging dir
+
+---
+ python_bindings/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/python_bindings/CMakeLists.txt b/python_bindings/CMakeLists.txt
+index 75fc03d..bab669a 100644
+--- a/python_bindings/CMakeLists.txt
++++ b/python_bindings/CMakeLists.txt
+@@ -4,6 +4,8 @@
+ 
+ find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+ 
++set(Python3_SITEARCH "${Python3_SITEARCH}" CACHE PATH "Third-party platform dependent installation directory." FORCE)
++
+ set(PYBIND11_VER 2.6.2)
+ find_package(pybind11 ${PYBIND11_VER} QUIET)
+ if (NOT pybind11_FOUND)

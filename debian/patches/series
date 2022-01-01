@@ -2,3 +2,5 @@
 0006-Fixup-libhalide-version-soversion-for-debian-package.patch
 0003-Try-to-fix-riscv64-build-6503.patch
 0004-Mullapudi2016-don-t-hardcode-the-list-of-supported-t.patch
+0005-If-cmake-built-a-python-module-teach-cmake-to-instal.patch
+0006-Actually-make-Python3_SITEARCH-available-in-packagin.patch

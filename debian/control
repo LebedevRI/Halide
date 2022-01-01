@@ -2,9 +2,10 @@ Source: halide
 Section: devel
 Priority: optional
 Maintainer: Roman Lebedev <lebedev.ri@gmail.com>
-Build-Depends: debhelper-compat (= 13), cmake, ninja-build, llvm-13,
-               llvm-13-dev, clang-13, libclang-13-dev,
-               lld-13 [!powerpc !mips64el !ppc64 !riscv64],
+Build-Depends: debhelper-compat (= 13),
+               dh-python, libpython3-dev, pybind11-dev, python3-numpy, python3-imageio,
+               cmake, ninja-build, llvm-13, llvm-13-dev, clang-13,
+               libclang-13-dev, lld-13 [!powerpc !mips64el !ppc64 !riscv64],
                liblld-13-dev,
                libomp-13-dev [!armel !mipsel !s390x !sparc64 !x32],
                libgl-dev, zlib1g-dev, libjpeg-dev,
@@ -63,6 +64,19 @@ Description: fast, portable computation on images and tensors -- Development fil
  high-performance image and array processing code on modern machines.
  .
  This package contains the files necessary to develop against libhalide.
+
+Package: python3-halide
+Architecture: any
+Multi-Arch: same
+Section: python
+Depends: libhalide13-0 (= ${binary:Version}),
+         ${shlibs:Depends}, ${misc:Depends},
+Description: fast, portable computation on images and tensors -- Python3 bindings
+ Halide is a programming language designed to make it easier to write
+ high-performance image and array processing code on modern machines.
+ .
+ This package contains provides a Python binding that provides full support
+ for writing Halide embedded in Python without C++.
 
 Package: libhalide13-doc
 Architecture: all

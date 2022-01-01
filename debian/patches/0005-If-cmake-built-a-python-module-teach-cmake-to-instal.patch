@@ -1,0 +1,41 @@
+From: Mark Glines <mark@glines.org>
+Date: Fri, 31 Dec 2021 16:08:56 -0500
+Subject: If cmake built a python module,
+ teach cmake to install the python module.
+
+---
+ packaging/CMakeLists.txt | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/packaging/CMakeLists.txt b/packaging/CMakeLists.txt
+index c8d4334..ff73efe 100644
+--- a/packaging/CMakeLists.txt
++++ b/packaging/CMakeLists.txt
+@@ -17,6 +17,9 @@ set(Halide_INSTALL_PLUGINDIR "${CMAKE_INSTALL_LIBDIR}"
+ set(Halide_INSTALL_TOOLSDIR "${CMAKE_INSTALL_DATADIR}/tools"
+     CACHE STRING "Path to Halide build-time tools and sources")
+ 
++set(Halide_INSTALL_PYTHONDIR "${Python3_SITEARCH}"
++    CACHE STRING "Path to Halide Python bindings folder")
++
+ ##
+ # Main library exports
+ ##
+@@ -45,6 +48,17 @@ foreach (dep IN ITEMS Halide_LLVM Halide_wabt)
+     endif ()
+ endforeach ()
+ 
++##
++# Python bindings
++##
++
++if (WITH_PYTHON_BINDINGS)
++    install(TARGETS Halide_Python
++            EXPORT Halide_Python
++            LIBRARY DESTINATION ${Halide_INSTALL_PYTHONDIR} COMPONENT Halide_Python
++            NAMELINK_COMPONENT Halide_Python)
++endif ()
++
+ ##
+ # Library-type-agnostic interface targets
+ ##
