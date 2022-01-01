@@ -4,6 +4,8 @@
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
+set(Python3_SITEARCH "${Python3_SITEARCH}" CACHE PATH "Third-party platform dependent installation directory." FORCE)
+
 set(PYBIND11_VER 2.6.2)
 find_package(pybind11 ${PYBIND11_VER} QUIET)
 if (NOT pybind11_FOUND)
