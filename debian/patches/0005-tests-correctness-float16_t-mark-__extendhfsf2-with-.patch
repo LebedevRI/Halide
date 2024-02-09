@@ -1,0 +1,44 @@
+From: Roman Lebedev <lebedev.ri@gmail.com>
+Date: Fri, 9 Feb 2024 14:55:55 +0300
+Subject: tests: correctness/float16_t: mark `__extendhfsf2` with default
+ visibility
+
+```
+[2336/4154] /usr/bin/clang++-17 -DHALIDE_ENABLE_RTTI -DHALIDE_VERSION_MAJOR=17 -DHALIDE_VERSION_MINOR=0 -DHALIDE_VERSION_PATCH=0 -DHALIDE_WITH_EXCEPTIONS -I/build/halide-17.0.0/test/common -I/build/halide-17.0.0/tools -I/build/halide-17.0.0/build/stage-1/halide/include -g -fdebug-default-version=4 -fprofile-use=/build/halide-17.0.0/build-profile/default.profdata -fcs-profile-generate -Xclang -mllvm -Xclang -vp-counters-per-site=100.0 -fuse-ld=lld-17 -Wl,--build-id=sha1 -std=c++17 -flto=thin -fPIE -fvisibility=hidden -fvisibility-inlines-hidden -Winvalid-pch -Xclang -include-pch -Xclang /build/halide-17.0.0/build/stage-1/halide/test/CMakeFiles/_test_internal.dir/cmake_pch.hxx.pch -Xclang -include -Xclang /build/halide-17.0.0/build/stage-1/halide/test/CMakeFiles/_test_internal.dir/cmake_pch.hxx -MD -MT test/correctness/CMakeFiles/correctness_float16_t.dir/float16_t.cpp.o -MF test/correctness/CMakeFiles/correctness_float16_t.dir/float16_t.cpp.o.d -o test/correctness/CMakeFiles/correctness_float16_t.dir/float16_t.cpp.o -c /build/halide-17.0.0/test/correctness/float16_t.cpp
+<...>
+ld.lld-17: error: undefined hidden symbol: __extendhfsf2
+>>> referenced by float16_t.cpp:391 (/build/halide-17.0.0/test/correctness/float16_t.cpp:391)
+>>>               lto.tmp:(main)
+>>> did you mean: __extendbfsf2
+>>> defined in: /lib/x86_64-linux-gnu/libgcc_s.so.1
+clang++-17: error: linker command failed with exit code 1 (use -v to see invocation)
+
+```
+
+Forwarded: https://github.com/halide/Halide/pull/8084
+---
+ test/correctness/float16_t.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/correctness/float16_t.cpp b/test/correctness/float16_t.cpp
+index 2c10f3e..b066a39 100644
+--- a/test/correctness/float16_t.cpp
++++ b/test/correctness/float16_t.cpp
+@@ -12,7 +12,7 @@ extern "C" {
+ 
+ // In Clang 15 and later, this function is passed a uint16... but in the xmm0 register on x86-64.
+ // So we'll declare it as a float and just grab the upper 16 bits.
+-__attribute__((weak)) float __extendhfsf2(float actually_a_float16) {
++__attribute__((weak, visibility("default"))) float __extendhfsf2(float actually_a_float16) {
+     uint16_t data;
+     memcpy(&data, &actually_a_float16, sizeof(data));
+     return (float)Halide::float16_t::make_from_bits(data);
+@@ -20,7 +20,7 @@ __attribute__((weak)) float __extendhfsf2(float actually_a_float16) {
+ 
+ #else
+ 
+-__attribute__((weak)) float __extendhfsf2(uint16_t data) {
++__attribute__((weak, visibility("default"))) float __extendhfsf2(uint16_t data) {
+     return (float)Halide::float16_t::make_from_bits(data);
+ }
+ 

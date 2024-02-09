@@ -2,3 +2,4 @@
 0006-Fixup-libhalide-version-soversion-for-debian-package.patch
 0003-Fixup-libHalidePyStubs-version-soversion-for-debian-.patch
 0004-clang-does-not-support-_Float16-when-targeting-i386.patch
+0005-tests-correctness-float16_t-mark-__extendhfsf2-with-.patch

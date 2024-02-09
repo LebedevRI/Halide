@@ -3,6 +3,8 @@ Date: Wed, 12 Jul 2023 03:54:26 +0300
 Subject: clang does not support `_Float16` when targeting i386
 
 See https://github.com/halide/Halide/issues/7678
+
+Forwarded: https://github.com/halide/Halide/pull/8085
 ---
  src/runtime/HalideRuntime.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
