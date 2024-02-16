@@ -42,6 +42,13 @@ ifeq ($(DEB_HOST_ARCH),arm64)
 	WITH_LLD = ON
 endif
 
+ifeq ($(DEB_HOST_ARCH),riscv64)
+	WITH_LTO = ON
+	WITH_TESTS = ON
+	WITH_PGO = ON
+	WITH_LLD = ON
+endif
+
 ifneq (,$(filter nolto,$(DEB_BUILD_OPTIONS)))
 	# Respect nolto.
 	WITH_LTO = OFF
@@ -63,6 +70,7 @@ CC = clang-$(LLVM_VERSION)
 CXX = clang++-$(LLVM_VERSION)
 
 SOURCE_DIR = $(CURDIR)
+BUILDSPACE = $(SOURCE_DIR)-build
 
 BUILD_STAGE ?= 2
 STAGE_COMPILE_FLAGS ?=
@@ -80,12 +88,12 @@ endif
 
 CXXFLAGS = $(CFLAGS)
 
-PROFILE_DIR = $(SOURCE_DIR)/build-profile
+PROFILE_DIR = $(BUILDSPACE)/profile
 PROFILE_TMP_DIR = $(PROFILE_DIR)/raw
 LLVM_PROFILE_FILE = "$(PROFILE_TMP_DIR)/stage-$(BUILD_STAGE)-%p-%m.profraw"
 PROFILE = $(PROFILE_DIR)/default.profdata
 
-BUILD_DIR_PREFIX = $(SOURCE_DIR)/build
+BUILD_DIR_PREFIX = $(BUILDSPACE)/build
 
 STAGE_BUILD_DIR_PREFIX = $(BUILD_DIR_PREFIX)/stage-$(BUILD_STAGE)
 BUILD_DIR = $(STAGE_BUILD_DIR_PREFIX)/halide
@@ -213,3 +221,7 @@ override_dh_auto_install:
 
 override_dh_install:
 	dh_install --sourcedir=$(INSTALL_DIR)
+
+override_dh_clean:
+	dh_clean
+	rm -rf $(BUILDSPACE)

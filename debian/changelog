@@ -1,3 +1,11 @@
+halide (17.0.0-2) unstable; urgency=medium
+
+  * Enable RISCV64 build
+  * Don't build-depend on atlas. Fixes #1056675.
+  * Do provide `override_dh_clean` target. Fixes #1044671.
+
+ -- Roman Lebedev <lebedev.ri@gmail.com>  Fri, 16 Feb 2024 23:26:19 +0300
+
 halide (17.0.0-1) unstable; urgency=medium
 
   * New upstream major release.

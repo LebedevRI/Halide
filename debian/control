@@ -17,7 +17,7 @@ Build-Depends: debhelper-compat (= 13),
                clang-17,
                libclang-17-dev,
                libclang-rt-17-dev,
-               lld-17 [amd64 arm64 i386],
+               lld-17 [amd64 arm64 i386 riscv64],
                libomp-17-dev [!armel !mipsel !s390x !sparc64 !x32 !powerpc],
                libgl-dev,
                zlib1g-dev,
@@ -26,7 +26,6 @@ Build-Depends: debhelper-compat (= 13),
                doxygen,
                libxml2-dev,
                libopenblas-dev   [!armel !mipsel !x32],
-               libatlas-base-dev [ armel  mipsel  ],
                libflatbuffers-dev
 Standards-Version: 4.6.2
 Homepage: https://halide-lang.org/
@@ -35,7 +34,7 @@ Vcs-Git: https://salsa.debian.org/pkg-llvm-team/halide.git -b debian
 Rules-Requires-Root: no
 
 Package: libhalide17-0
-Architecture: any-i386 any-amd64 any-arm64
+Architecture: any-i386 any-amd64 any-arm64 any-riscv64
 Multi-Arch: same
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
