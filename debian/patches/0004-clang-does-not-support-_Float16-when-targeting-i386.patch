@@ -10,7 +10,7 @@ Forwarded: https://github.com/halide/Halide/pull/8085
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/runtime/HalideRuntime.h b/src/runtime/HalideRuntime.h
-index eea4faf..d7e481c 100644
+index 7030f77..f67f8e3 100644
 --- a/src/runtime/HalideRuntime.h
 +++ b/src/runtime/HalideRuntime.h
 @@ -91,7 +91,7 @@ extern "C" {
