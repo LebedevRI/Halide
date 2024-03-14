@@ -1,3 +1,19 @@
+halide (17.0.2-1) unstable; urgency=medium
+
+  * Update to newest upstream point release
+  * Go back to building against LLVM17, resulting in a soversion bump,
+    see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1067005
+  * Drop soversion from -dev package name,
+    only one can be installed at the same time,
+    add necessary breaks+replaces (Closes: #1066057)
+  * Add explicit timeout for tests, allow them to be rerun at least once,
+    to avoid spurious build failures due to flaky CI infra (Closes: #1069403)
+  * Allow all tests to be rerun at least once, to avoid spurious build failures
+    due to flaky CI infra (Closes: #1068138)
+  * 64-bit `time_t` transition rebuild
+
+ -- Roman Lebedev <lebedev.ri@gmail.com>  Wed, 26 Jun 2024 04:33:35 +0300
+
 halide (17.0.1-1) unstable; urgency=medium
 
   * Update to newest upstream point release
