@@ -19,9 +19,9 @@ WITH_PGO = OFF
 WITH_LLD = OFF
 
 ifeq ($(DEB_HOST_ARCH),amd64)
-	WITH_LTO = ON
+	WITH_LTO = OFF
 	WITH_TESTS = ON
-	WITH_PGO = ON
+	WITH_PGO = OFF
 	WITH_LLD = ON
 endif
 
@@ -94,6 +94,10 @@ BUILD_DIR = $(STAGE_BUILD_DIR_PREFIX)/halide
 INSTALL_DIR = $(STAGE_BUILD_DIR_PREFIX)/halide-install
 APPS_BUILD_DIR = $(STAGE_BUILD_DIR_PREFIX)/halide-test-apps
 
+Halide_TARGET ?=
+OCL_ICD_VENDORS ?=
+RUSTICL_ENABLE ?=
+
 # Certain halide tests are sensitive to system load, and may be flaky.
 TEST_GROUPS_MULTITHREADED = multithreaded
 TEST_GROUPS_PERFORMANCE = performance
@@ -106,7 +110,8 @@ else
 	dh $@                --buildsystem=cmake+ninja
 endif
 
-perform_stage_build:
+build_halide:
+	env
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) dh_auto_configure --sourcedir=$(SOURCE_DIR) --builddir=$(BUILD_DIR) -- \
 	-DCMAKE_C_COMPILER=$(CC) \
 	-DCMAKE_CXX_COMPILER=$(CXX) \
@@ -137,15 +142,15 @@ perform_stage_build:
 	-DCMAKE_INSTALL_BINDIR=lib/$(DEB_HOST_MULTIARCH)/halide$(HALIDE_VERSION)/ \
 	-DHalide_INSTALL_TOOLSDIR=src/halide$(HALIDE_VERSION)/ \
 	-DHalide_INSTALL_PYTHONDIR=lib/python3/dist-packages/ \
-	-DCMAKE_INSTALL_DOCDIR=share/doc/halide$(HALIDE_VERSION)/
+	-DCMAKE_INSTALL_DOCDIR=share/doc/halide$(HALIDE_VERSION)/ \
+	-DHalide_TARGET=$(Halide_TARGET)
 
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) dh_auto_build --builddir=$(BUILD_DIR)
 
-	# Remove files that won't be needed anymore.
-	# This reduces the total amount of disk space used during build.
-	# NOTE: we must spare the static libraries that were intentionally created by the build system!
-	find $(BUILD_DIR) \( -name '*.o' -or -name '*.a' \) -not -name 'libHalidePyStubs$(HALIDE_VERSION).a' -delete
+install_halide:
+	dh_auto_install --builddir=$(BUILD_DIR) --destdir=$(INSTALL_DIR)
 
+test_halide:
 ifneq ($(WITH_TESTS),OFF)
 	# WARNING: running multi-threaded halide tests in parallel is unsupported!
 	# Non-multithreaded non-performance non-flaky tests.
@@ -158,11 +163,8 @@ ifneq ($(WITH_TESTS),OFF)
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1                    --label-regex   "$(TEST_GROUPS_PERFORMANCE)"                                                                     --output-on-failure --test-dir $(BUILD_DIR) || /bin/true
 endif
 
-	dh_auto_install --builddir=$(BUILD_DIR) --destdir=$(INSTALL_DIR)
-
-	# Remove the whole build directory. We no longer need it.
-	rm -rf $(BUILD_DIR)
-
+build_halide_apps:
+	# NOTE: should be run after install_halide step.
 ifneq ($(WITH_TESTS),OFF)
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) dh_auto_configure --sourcedir=$(SOURCE_DIR)/apps/ --builddir=$(APPS_BUILD_DIR) -- \
 	-DCMAKE_C_COMPILER=$(CC) -DCMAKE_CXX_COMPILER=$(CXX) \
@@ -170,20 +172,34 @@ ifneq ($(WITH_TESTS),OFF)
 	-DCMAKE_BUILD_TYPE=Release -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=$(WITH_LTO) \
 	-DENABLE_APPS_HANNK=OFF \
 	-DHalide_DIR=$(INSTALL_DIR)/usr/lib/$(DEB_HOST_MULTIARCH)/cmake/Halide$(HALIDE_VERSION)/ \
-	-DHalideHelpers_DIR=$(INSTALL_DIR)/usr/lib/$(DEB_HOST_MULTIARCH)/cmake/HalideHelpers$(HALIDE_VERSION)/
+	-DHalideHelpers_DIR=$(INSTALL_DIR)/usr/lib/$(DEB_HOST_MULTIARCH)/cmake/HalideHelpers$(HALIDE_VERSION)/ \
+	-DHalide_TARGET=$(Halide_TARGET)
 
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) dh_auto_build --builddir=$(APPS_BUILD_DIR)
+endif
 
-	# Remove files that won't be needed anymore.
-	# This reduces the total amount of disk space used during build.
-	find $(APPS_BUILD_DIR) \( -name '*.o' -or -name '*.a' \) -delete
-
+test_halide_apps:
+ifneq ($(WITH_TESTS),OFF)
 	# WARNING: running multi-threaded halide tests in parallel is unsupported!
 	LLVM_PROFILE_FILE=$(LLVM_PROFILE_FILE) ctest -j1 --output-on-failure --test-dir $(APPS_BUILD_DIR)
+endif
+
+perform_stage_build_impl:
+	$(MAKE) -f debian/rules build_halide
+ifeq ($(Halide_TARGET),host)
+	$(MAKE) -f debian/rules install_halide
+endif
+	$(MAKE) -f debian/rules test_halide
+	$(MAKE) -f debian/rules build_halide_apps
+	$(MAKE) -f debian/rules test_halide_apps
+
+perform_stage_build:
+	#Halide_TARGET=host        OCL_ICD_VENDORS=no-opencl-please.missing                         $(MAKE) -f debian/rules perform_stage_build_impl
+
+	Halide_TARGET=host-opencl OCL_ICD_VENDORS=libRusticlOpenCL.so      RUSTICL_ENABLE=llvmpipe $(MAKE) -f debian/rules perform_stage_build_impl
 
 	# Remove the whole build directory. We no longer need it.
-	rm -rf $(APPS_BUILD_DIR)
-endif
+	rm -rf $(BUILD_DIR)
 
 override_dh_auto_configure:
 	# Nothing to do. Because of multi-stage build, everything happens in override_dh_auto_build.

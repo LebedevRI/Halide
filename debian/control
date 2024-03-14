@@ -26,7 +26,9 @@ Build-Depends: debhelper-compat (= 13),
                doxygen,
                libxml2-dev,
                libopenblas-dev   [!armel !mipsel !x32],
-               libflatbuffers-dev
+               libflatbuffers-dev,
+               ocl-icd-opencl-dev,
+               mesa-opencl-icd
 Standards-Version: 4.6.2
 Homepage: https://halide-lang.org/
 Vcs-Browser: https://salsa.debian.org/pkg-llvm-team/halide/-/tree/debian
@@ -38,6 +40,7 @@ Architecture: any-i386 any-amd64 any-arm64
 Multi-Arch: same
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: ocl-icd-opencl-dev
 Description: fast, portable computation on images and tensors
  Halide is a programming language designed to make it easier to write
  high-performance image and array processing code on modern machines.
@@ -69,7 +72,7 @@ Description: fast, portable computation on images and tensors (virtual library)
  .
  This is an empty package.
 
-Package: libhalide17-1-dev
+Package: libhalide17-dev
 Architecture: any-i386 any-amd64 any-arm64
 Multi-Arch: same
 Section: libdevel
