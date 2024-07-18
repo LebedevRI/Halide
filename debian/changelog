@@ -1,3 +1,11 @@
+halide (18.0.0-1) UNRELEASED; urgency=medium
+
+  * Update to latest upstream release.
+  * Drop patches that have been applied upstream.
+  * Still build with/against LLVM17.
+
+ -- Roman Lebedev <lebedev.ri@gmail.com>  Fri, 19 Jul 2024 01:11:11 +0300
+
 halide (17.0.2-2) unstable; urgency=medium
 
   * Fully go back to building using LLVM17,

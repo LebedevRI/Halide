@@ -33,7 +33,7 @@ Vcs-Browser: https://salsa.debian.org/pkg-llvm-team/halide/-/tree/debian
 Vcs-Git: https://salsa.debian.org/pkg-llvm-team/halide.git -b debian
 Rules-Requires-Root: no
 
-Package: libhalide17-2
+Package: libhalide18-0
 Architecture: any-i386 any-amd64 any-arm64
 Multi-Arch: same
 Section: libs
@@ -52,7 +52,7 @@ Description: fast, portable computation on images and tensors
  You can then compile this representation to an object file,
  or JIT-compile it and run it in the same process.
 
-Package: libhalideaot17-2
+Package: libhalideaot18-0
 Architecture: all
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends},
@@ -69,40 +69,38 @@ Description: fast, portable computation on images and tensors (virtual library)
  .
  This is an empty package.
 
-Package: libhalide17-dev
+Package: libhalide18-dev
 Architecture: any-i386 any-amd64 any-arm64
 Multi-Arch: same
 Section: libdevel
-Depends: libhalide17-2 (= ${binary:Version}),
+Depends: libhalide18-0 (= ${binary:Version}),
          ${shlibs:Depends}, ${misc:Depends},
          llvm-17-dev
-Suggests: libhalide17-doc, halide17-api-doc
-Breaks: libhalide17-0-dev, libhalide17-1-dev
-Replaces: libhalide17-0-dev, libhalide17-1-dev
+Suggests: libhalide18-doc, halide18-api-doc
 Description: fast, portable computation on images and tensors -- Development files
  Halide is a programming language designed to make it easier to write
  high-performance image and array processing code on modern machines.
  .
  This package contains the files necessary to develop against libhalide.
 
-Package: libhalide17-doc
+Package: libhalide18-doc
 Architecture: all
 Multi-Arch: foreign
 Section: doc
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Enhances: libhalide17-2-dev
+Enhances: libhalide18-0-dev
 Description: fast, portable computation on images and tensors (C++ documentation)
  Halide is a programming language designed to make it easier to write
  high-performance image and array processing code on modern machines.
  .
  This package contains README's and tutorials for using Halide from C++.
 
-Package: halide17-api-doc
+Package: halide18-api-doc
 Architecture: all
 Multi-Arch: foreign
 Section: doc
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Enhances: libhalide17-2-dev
+Enhances: libhalide18-0-dev
 Description: fast, portable computation on images and tensors (Doxygen documentation)
  Halide is a programming language designed to make it easier to write
  high-performance image and array processing code on modern machines.
@@ -113,7 +111,7 @@ Package: python3-halide
 Architecture: any-amd64 any-arm64
 Multi-Arch: same
 Section: python
-Depends: libhalide17-2 (= ${binary:Version}),
+Depends: libhalide18-0 (= ${binary:Version}),
          ${shlibs:Depends}, ${misc:Depends},
          ${python3:Depends}
 Suggests: python3-halide-doc

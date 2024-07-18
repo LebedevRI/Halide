@@ -5,9 +5,9 @@ include /usr/share/dpkg/architecture.mk
 # We do not care about distro's LTO preferences.
 DEB_BUILD_MAINT_OPTIONS += optimize=-lto
 
-HALIDE_VERSION = 17
+HALIDE_VERSION = 18
 
-HALIDE_SOVERSION = 2
+HALIDE_SOVERSION = 0
 
 COMPILER_LLVM_VERSION = 17
 
