@@ -1,4 +1,4 @@
-halide (18.0.0-1) UNRELEASED; urgency=medium
+halide (18.0.0-1) unstable; urgency=medium
 
   * Update to latest upstream release.
   * Drop patches that have been applied upstream.
