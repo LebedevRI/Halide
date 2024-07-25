@@ -93,7 +93,7 @@ APPS_BUILD_DIR = $(STAGE_BUILD_DIR_PREFIX)/halide-test-apps
 # Certain halide tests are sensitive to system load, and may be flaky.
 TEST_GROUPS_MULTITHREADED = multithreaded
 TEST_GROUPS_PERFORMANCE = performance
-TEST_GROUPS_FLAKY = auto_schedule
+TEST_GROUPS_FLAKY = autoschedulers
 CTEST_OPTIONS = --timeout 2400 --repeat until-pass:5 --output-on-failure
 
 %:
