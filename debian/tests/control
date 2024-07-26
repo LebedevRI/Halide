@@ -1,0 +1,11 @@
+Tests: 00-test-integration
+Depends: libhalide18-dev, python3-halide, cmake, ninja-build
+# FIXME: remove python3-halide dep before flight!
+
+Tests: 01-test-python-bindings
+Depends: @builddeps@, libhalide18-dev, python3-halide
+# FIXME: remove python3-halide dep before flight!
+
+Tests: 02-test-apps
+Depends: @builddeps@, libhalide18-dev, python3-halide
+# FIXME: remove python3-halide dep before flight!

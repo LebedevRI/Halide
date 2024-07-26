@@ -1,0 +1,36 @@
+From: Roman Lebedev <lebedev.ri@gmail.com>
+Date: Sat, 27 Jul 2024 05:05:28 +0300
+Subject: Support not building python bindings, while running python tests
+
+Forwarded: https://github.com/halide/Halide/pull/8355
+---
+ python_bindings/CMakeLists.txt | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/python_bindings/CMakeLists.txt b/python_bindings/CMakeLists.txt
+index 25f61fe..5aed7b5 100644
+--- a/python_bindings/CMakeLists.txt
++++ b/python_bindings/CMakeLists.txt
+@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD 17 CACHE STRING "The minimum C++ standard to use")
+ option(CMAKE_CXX_STANDARD_REQUIRED "Prevent CMake C++ standard selection decay" ON)
+ option(CMAKE_CXX_EXTENSIONS "Enable C++ vendor extensions (e.g. GNU)" OFF)
+ 
++option(ACTUALLY_BUILD_PYTHON_BINDINGS "Build Python bindings" ON)
++
+ # Duplicated options from parent project
+ option(WITH_TESTS "Build tests" ON)
+ option(WITH_TUTORIALS "Build tutorials" ON)
+@@ -91,9 +93,11 @@ endfunction()
+ # Add our sources to this sub-tree.
+ ##
+ 
+-add_subdirectory(src)
++if (ACTUALLY_BUILD_PYTHON_BINDINGS)
++    add_subdirectory(src)
++endif ()
+ 
+-if (WITH_PYTHON_STUBS)
++if (ACTUALLY_BUILD_PYTHON_BINDINGS AND WITH_PYTHON_STUBS)
+     add_subdirectory(stub)
+ endif ()
+ 

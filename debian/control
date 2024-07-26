@@ -31,6 +31,7 @@ Standards-Version: 4.6.2
 Homepage: https://halide-lang.org/
 Vcs-Browser: https://salsa.debian.org/pkg-llvm-team/halide/-/tree/debian
 Vcs-Git: https://salsa.debian.org/pkg-llvm-team/halide.git -b debian
+Testsuite: autopkgtest
 Rules-Requires-Root: no
 
 Package: libhalide18-0
@@ -74,6 +75,7 @@ Architecture: any-i386 any-amd64 any-arm64
 Multi-Arch: same
 Section: libdevel
 Depends: libhalide18-0 (= ${binary:Version}),
+         python3-halide (= ${binary:Version}),
          ${shlibs:Depends}, ${misc:Depends},
          llvm-17-dev
 Suggests: libhalide18-doc, halide18-api-doc
@@ -109,7 +111,6 @@ Description: fast, portable computation on images and tensors (Doxygen documenta
 
 Package: python3-halide
 Architecture: any-amd64 any-arm64
-Multi-Arch: same
 Section: python
 Depends: libhalide18-0 (= ${binary:Version}),
          ${shlibs:Depends}, ${misc:Depends},

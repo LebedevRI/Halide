@@ -1,3 +1,15 @@
+halide (18.0.0-3) unstable; urgency=medium
+
+  * `python3-halide` is not `MA:same`/co-installable, don't mark it as such.
+  * Add missing dependency from `libhalide18-dev` on `python3-halide`,
+    if latter is not present CMake's `find_package(Halide)` fails.
+  * Build `Halide::PyStub` libray without LTO, so that after install
+    it can actually be linked against.
+  * Finally, add some autopkgtests!
+  * Reorder patches.
+
+ -- Roman Lebedev <lebedev.ri@gmail.com>  Sat, 27 Jul 2024 18:59:56 +0300
+
 halide (18.0.0-2) unstable; urgency=medium
 
   * Re-silence failures of flaky tests (Closes: #1076968)

@@ -1,0 +1,27 @@
+From: Roman Lebedev <lebedev.ri@gmail.com>
+Date: Sat, 27 Jul 2024 07:22:14 +0300
+Subject: When `python_bindings` is being built standalone,
+ call `enable_testing()` there
+
+Else `ctest` won't work.
+
+Forwarded: https://github.com/halide/Halide/pull/8355
+---
+ python_bindings/CMakeLists.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/python_bindings/CMakeLists.txt b/python_bindings/CMakeLists.txt
+index 5aed7b5..2c74d48 100644
+--- a/python_bindings/CMakeLists.txt
++++ b/python_bindings/CMakeLists.txt
+@@ -1,6 +1,10 @@
+ cmake_minimum_required(VERSION 3.22...3.23)
+ project(Halide_Python)
+ 
++if (PROJECT_IS_TOP_LEVEL)
++    enable_testing()
++endif ()
++
+ include(CMakeDependentOption)
+ 
+ ##

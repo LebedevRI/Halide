@@ -23,6 +23,9 @@ WITH_LLD = ON
 ifeq ($(DEB_HOST_ARCH),amd64)
 	WITH_LTO = ON
 	WITH_PGO = ON
+
+	WITH_PGO = OFF # FIXME: remove before flight!
+	WITH_TESTS = OFF # FIXME: remove before flight!
 endif
 
 ifeq ($(DEB_HOST_ARCH),i386)

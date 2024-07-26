@@ -1,3 +1,7 @@
-0005-Remove-unrelevant-prebuild-binaries-to-pacify-lintia.patch
-0006-Fixup-libhalide-version-soversion-for-debian-package.patch
+0001-Remove-unrelevant-prebuild-binaries-to-pacify-lintia.patch
+0002-Fixup-libhalide-version-soversion-for-debian-package.patch
 0003-Fixup-libHalidePyStubs-version-soversion-for-debian-.patch
+0004-Dissable-LTO-for-python-stub.patch
+0005-XFAIL-some-integration-tests-expecting-static-halide.patch
+0006-Support-not-building-python-bindings-while-running-p.patch
+0007-When-python_bindings-is-being-built-standalone-call-.patch
